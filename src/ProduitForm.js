@@ -5,10 +5,10 @@ export default class ProduitForm extends React.Component{
         super(props);
         this.state={
             produit: {
-                id: undefined,
+                id: null,
                 nom: "",
                 categorie:{
-                    id: undefined,
+                    id: 1,
                     nom: ""
                 } 
             },
@@ -22,6 +22,7 @@ export default class ProduitForm extends React.Component{
     save = (evt)=>{
         evt.preventDefault();
         this.props.saveCallback(this.state.produit);
+        console.log(this.state.produit);
     }
     handleChange = (event) =>{
         if (event.target.name === "categorie") {
@@ -53,15 +54,19 @@ export default class ProduitForm extends React.Component{
 
                 </div>
                 <div>
-                    categorie : <select name="categorie" id="" onChange={this.handleChange}>
+                    categorie : <select name="categorie" id="" onChange={this.handleChange} defaultValue={produit.categorie.id || ""}>
                         {this.state.categories.map(cat=> {
-                            const selected = cat.id === produit.categorie.id ? {selected : "selected"} : {};
-                            return <option key={cat.id} value={cat.id} {...selected}>{cat.nom}</option>
+                            // const selected = cat.id === produit.categorie.id ? {selected : "selected"} : {};
+                            return <option 
+                                        key={cat.id} 
+                                        value={cat.id} 
+                                        // {...selected}
+                                        >{cat.nom}</option>
                         })}
                     </select>
                 </div>
                 <div>
-                    <button onClick={this.save}>Modifier</button>
+                    <button onClick={this.save}>{edit ? "Modifier":"Créer"}</button>
                     <button onClick={this.cancel}>Annuler</button>
                 </div>
                 
@@ -98,7 +103,7 @@ export default class ProduitForm extends React.Component{
           .then((res)=> {
             console.log(res);
             this.setState({
-                categories: res
+                categories: res,
               }
               )
           })
