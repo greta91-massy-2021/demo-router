@@ -4,34 +4,38 @@ import { Link } from 'react-router-dom';
 export default class ProduitListe extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props.produits);
     }
     render() {
         return (
             <React.Fragment>
                 <Link to={this.props.match.url + '/create'}>Créer un produit</Link>
-                <ul>
-                    <li>Produit 1
-                        <Link to={this.props.match.url + '/1'}>Afficher</Link>
-                        <Link to={this.props.match.url + '/edit/1'}>Modifier</Link>
-                        <button onClick={() => this.delete(1)}>Supprimer</button>
-                    </li>
-                    <li>Produit 2
-                        <Link to={this.props.match.url + '/2'}>Afficher</Link>
-                        <Link to={this.props.match.url + '/edit/2'}>Modifier</Link>
-                        <button onClick={() => this.delete(2)}>Supprimer</button>
-                    </li>
-                    <li>Produit 3
-                        <Link to={this.props.match.url + '/3'}>Afficher</Link>
-                        <Link to={this.props.match.url + '/edit/3'}>Modifier</Link>
-                        <button onClick={() => this.delete(3)}>Supprimer</button>
-                    </li>
-                    <li>Produit 4
-                        <Link to={this.props.match.url + '/4'}>Afficher</Link>
-                        <Link to={this.props.match.url + '/edit/4'}>Modifier</Link>
-                        <button onClick={() => this.delete(4)}>Supprimer</button>
-                    </li>
-
-                </ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>nom</th>
+                            <th>cat id</th>
+                            <th>cat nom</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.produits.map((p) => {
+                            return (<tr key={p.id}> 
+                                <td>{p.id}</td>
+                                <td>{p.nom}</td>
+                                <td>{p.categorie.id}</td>
+                                <td>{p.categorie.nom}</td>
+                                <td>
+                                    <Link to={this.props.match.url + '/'+p.id}>Afficher</Link>
+                                    <Link to={this.props.match.url + '/edit/'+p.id}>Modifier</Link>
+                                    <button onClick={() => this.props.deleteCallback(p.id)}>Supprimer</button>
+                                </td>
+                            </tr>)
+                        })}
+                    </tbody>
+                </table>
             </React.Fragment>
 
         )

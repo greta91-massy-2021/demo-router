@@ -3,19 +3,105 @@ import React from 'react';
 export default class ProduitForm extends React.Component{
     constructor(props){
         super(props);
+        this.state={
+            produit: {
+                id: undefined,
+                nom: "",
+                categorie:{
+                    id: undefined,
+                    nom: ""
+                } 
+            },
+            categories : []
+        }
     }
-
+    cancel = (evt)=>{
+        evt.preventDefault();
+        this.props.history.push("/produits")
+    }
+    save = (evt)=>{
+        evt.preventDefault();
+        this.props.saveCallback(this.state.produit);
+    }
+    handleChange = (event) =>{
+        if (event.target.name === "categorie") {
+            this.setState((state)=>{
+                state.produit.categorie.id = event.target.value;
+                let index = event.nativeEvent.target.selectedIndex;
+                state.produit.categorie.nom = event.nativeEvent.target[index].text;;
+            })
+        }
+        else{
+            this.setState((state)=>state.produit[event.target.name] = event.target.value)
+        }
+    }
     render(){
         const edit = !!this.props.match.params.id;
+        const produit = this.state.produit || {};
         return (
             <form>
                 <div style={edit ? {} : {display:'none'}}>
                     id : <input name="id" 
                             readOnly 
-                            value={this.props.match.params.id} />
+                            value={produit.id} />
+                </div>
+                <div>
+                    nom : <input name="nom" 
+                            value={produit.nom} onChange={this.handleChange}/>
+                </div>
+                <div >
+
+                </div>
+                <div>
+                    categorie : <select name="categorie" id="" onChange={this.handleChange}>
+                        {this.state.categories.map(cat=> {
+                            const selected = cat.id === produit.categorie.id ? {selected : "selected"} : {};
+                            return <option key={cat.id} value={cat.id} {...selected}>{cat.nom}</option>
+                        })}
+                    </select>
+                </div>
+                <div>
+                    <button onClick={this.save}>Modifier</button>
+                    <button onClick={this.cancel}>Annuler</button>
                 </div>
                 
             </form>
         )
+    }
+
+    componentDidMount(){
+        const id=this.props.match.params.id;
+        if (id) {
+            fetch(`http://localhost:8080/produits/${id}`, {
+            method: "GET"
+          })
+          .then((data)=>{
+              console.log(data);
+              return data.json()
+            })
+          .then((res)=> {
+            console.log(res);
+            this.setState({
+                produit: res
+              }
+              )
+          })
+        }
+        //get categories
+        fetch(`http://localhost:8080/categories`, {
+            method: "GET"
+          })
+          .then((data)=>{
+              console.log(data);
+              return data.json()
+            })
+          .then((res)=> {
+            console.log(res);
+            this.setState({
+                categories: res
+              }
+              )
+          })
+        
     }
 }
