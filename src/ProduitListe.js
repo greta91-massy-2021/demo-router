@@ -6,18 +6,19 @@ export default class ProduitListe extends React.Component {
     constructor(props) {
         super(props);
         console.log(props);
-        
     }
 
     handlePageClick = ({selected}) =>{
         console.log(selected);
         this.props.setCurrentPage(selected);
-        this.props.history.push(this.props.match.url + "?currentPage="+selected)
+        this.props.history.push(this.props.match.url + "?currentPage="+selected+"&searchWord="+this.props.searchWord)
     }
     render() {
+        console.log(this.props);
+        const isEmploye = this.props.currentUser && this.props.currentUser.roles.includes("ROLE_EMPLOYE");
         return (
             <React.Fragment>
-                <Link to={this.props.match.url + '/create'}>Créer un produit</Link>
+                {!!this.props.searchWord && (<div>{this.props.produitsCount} produit(s) trouvés. Voici les résultats pour le mot-clé "{this.props.searchWord}"</div>)}
                 <ReactPaginate
                     previousLabel={"← Previous"}
                     nextLabel={"Next →"}
@@ -51,8 +52,9 @@ export default class ProduitListe extends React.Component {
                                 <td>{p.categorie.nom}</td>
                                 <td>
                                     <Link to={this.props.match.url + '/'+p.id}>Afficher</Link>
-                                    <Link to={this.props.match.url + '/edit/'+p.id}>Modifier</Link>
-                                    <button onClick={() => this.props.deleteCallback(p.id)}>Supprimer</button>
+                                    <Link style={isEmploye ? {}: {display: "none" }} to={this.props.match.url + '/edit/'+p.id}>Modifier</Link>
+                                    <button style={isEmploye ? {}: {display: "none" }}  onClick={() => this.props.deleteCallback(p.id)}>Supprimer</button>
+                                    
                                 </td>
                             </tr>)
                         })}
@@ -63,16 +65,32 @@ export default class ProduitListe extends React.Component {
         )
     }
     componentDidMount(){
-        console.log();
+        console.log("ProduitList Componentdidmount called");
         let search = this.props.location.search;
         search = search.trim();
-        search = search.split("=");
+        search = search.split("&");
         let currPage = 0;
-        if(search.length === 2){
-            currPage = search[0].indexOf("currentPage") >= 0 ? search[1] : 0;
+        let searchWord = "";
+        for (let index = 0; index < search.length; index++) {
+            let temp = search[index].split("=");
+            if (index === 0) {
+                if(temp.length === 2){
+                    currPage = temp[0].indexOf("currentPage") >= 0 ? temp[1] : 0;
+                }
+            }
+            else if(index === 1){
+                if(temp.length === 2){
+                    searchWord = temp[0].indexOf("searchWord") >= 0 ? temp[1] : "";
+                }
+            }
         }
-        console.log(currPage);
-        this.props.setCurrentPage(parseInt(currPage));
-        this.props.history.push(this.props.match.url + "?currentPage="+currPage)
+        if (searchWord !== "") {
+            this.props.search(searchWord);
+            this.props.history.push(this.props.match.url + "?currentPage="+currPage + "&searchWord="+ searchWord);
+        }
+        else{
+            this.props.setCurrentPage(parseInt(currPage));
+            this.props.history.push(this.props.match.url + "?currentPage="+currPage)
+        }
     }
 }
