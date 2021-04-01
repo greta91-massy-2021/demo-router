@@ -1,16 +1,19 @@
-import logo from './logo.svg';
+import React from 'react';
+
 import './App.css';
-import {Link, Route, Switch} from 'react-router-dom';
+import {Link, Route} from 'react-router-dom';
 import Produits from './Produits';
 import Categories from './Categories';
 import Login from './Login';
-import React from 'react';
+import AuthService from './AuthService';
+
+
 
 class App extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      currentUser : {}
+      currentUser : undefined
     }
   }
 
@@ -18,13 +21,22 @@ class App extends React.Component{
     console.log(user);
     this.setState({currentUser: user})
   }
+
+  logOut = () =>{
+    AuthService.logout();
+  }
+
   render(){
     return (
       <div className="App">
         <header className="App-header">
           <Link to="/produits?currentPage=0">Produits</Link>
           <Link to="/categories">Categories</Link>
-          <Link to="/login">Se connecter</Link>
+          {(this.state.currentUser) && <a href="/login" className="nav-link" onClick={this.logOut}>
+                  Se déconnecter
+                </a>}
+          {(!this.state.currentUser) && <Link to="/login">Se connecter</Link>}
+          
         </header>
         <main>
           <Route path="/produits" render={(props)=> <Produits {...props} currentUser={this.state.currentUser} />}/>
@@ -35,7 +47,7 @@ class App extends React.Component{
     );
   }
   componentDidMount(){
-    this.setState({currentUser : localStorage.getItem("user") || {}})
+    this.setState({currentUser : AuthService.getCurrentUser()})
   }
 }
 

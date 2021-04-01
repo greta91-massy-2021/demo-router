@@ -43,7 +43,7 @@ export default class Produits extends React.Component {
       //         }
       //         )
       //     })
-      ProduitService.getProduits().then((response)=>{
+      ProduitService.getProduits(pageNumber, perPage, searchWord).then((response)=>{
         console.log(response.data);
         this.setState({produits: response.data})
       }, (error)=>{
@@ -51,7 +51,7 @@ export default class Produits extends React.Component {
       })
     }
     getProduitsCount = (searchWord="")=>{
-      fetch(`http://localhost:8080/api/count?searchWord=${searchWord}`, {
+      fetch(`http://localhost:8080/api/public/count?searchWord=${searchWord}`, {
             method: "GET"
           })
           .then((data)=>{
@@ -90,6 +90,12 @@ export default class Produits extends React.Component {
             this.setCurrentPage(this.state.pageCount-1)
           }, (error)=>{
             console.log(error);
+            if (error.response) {
+              if (error.response.status === 403) {
+                alert("Accès refusé : Connectez-vous en tant qu'Employé pour créer un produit")
+                // this.props.history.push(`/login`)
+              }
+            }
           })
         }
         else{
@@ -191,9 +197,10 @@ export default class Produits extends React.Component {
         //       }
         //       )
         //   })
-        if(this.state.searchWord !== ""){
-          this.getProduitsCount();
-        }
+        // if(this.state.searchWord !== ""){
+        //   this.getProduitsCount();
+        // }
+        this.getProduitsCount();
         // this.getProduits();
         
     }

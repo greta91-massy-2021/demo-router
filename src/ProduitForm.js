@@ -44,7 +44,7 @@ export default class ProduitForm extends React.Component{
                 <div style={edit ? {} : {display:'none'}}>
                     id : <input name="id" 
                             readOnly 
-                            value={produit.id} />
+                            value={produit.id ? produit.id : 0} />
                 </div>
                 <div>
                     nom : <input name="nom" 
