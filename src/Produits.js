@@ -93,7 +93,7 @@ export default class Produits extends React.Component {
             if (error.response) {
               if (error.response.status === 403) {
                 alert("Accès refusé : Connectez-vous en tant qu'Employé pour créer un produit")
-                // this.props.history.push(`/login`)
+                this.props.history.push(`/login`)
               }
             }
           })
@@ -147,10 +147,11 @@ export default class Produits extends React.Component {
     }
     render() {
         console.log(this.props.match);
+        const isEmploye = this.props.currentUser && this.props.currentUser.roles && this.props.currentUser.roles.includes("ROLE_EMPLOYE");
         return (
             <React.Fragment>
                 <div className="App-header">
-                    <Link to={this.props.match.url + '/create'}>Créer un produit</Link>
+                    {(isEmploye && <Link to={this.props.match.url + '/create'}>Créer un produit</Link>)}
                     <SearchBar searchCallback={this.search} annulerSearch={this.clearSearchWord}/>
                 </div>
                 <Switch>

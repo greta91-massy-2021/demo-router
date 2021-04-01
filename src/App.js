@@ -32,9 +32,12 @@ class App extends React.Component{
         <header className="App-header">
           <Link to="/produits?currentPage=0">Produits</Link>
           <Link to="/categories">Categories</Link>
-          {(this.state.currentUser) && <a href="/login" className="nav-link" onClick={this.logOut}>
-                  Se déconnecter
-                </a>}
+          {(this.state.currentUser) && <div>
+                                        <span>{this.state.currentUser.username} | </span>
+                                        <a href="/login" className="nav-link" onClick={this.logOut}>
+                                          Se déconnecter
+                                        </a>
+                                      </div>}
           {(!this.state.currentUser) && <Link to="/login">Se connecter</Link>}
           
         </header>

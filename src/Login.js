@@ -54,12 +54,13 @@ export default class Login extends Component {
         (user) => {
           console.log(user);
           this.props.setCurrentUser(user);
-          if (user.roles.includes("ROLE_EMPLOYE")) {
-            this.props.history.push("/employe"); 
-          }
-          else if (user.roles.includes("ROLE_USER")) {
-            this.props.history.push("/home"); 
-          }
+          this.props.history.push("/"); 
+          // if (user.roles.includes("ROLE_EMPLOYE")) {
+          //   this.props.history.push("/employe"); 
+          // }
+          // else if (user.roles.includes("ROLE_USER")) {
+          //   this.props.history.push("/home"); 
+          // }
           // window.location.reload();
         },
         error => {
