@@ -5,6 +5,7 @@ import ProduitForm from './ProduitForm';
 import ProduitListe from './ProduitListe';
 import SearchBar from './SearchBar';
 import ProduitService from './ProduitService'
+import AuthService from './AuthService';
 
 export default class Produits extends React.Component {
     constructor(props) {
@@ -48,6 +49,7 @@ export default class Produits extends React.Component {
         this.setState({produits: response.data})
       }, (error)=>{
         console.log(error);
+        alert("Opération échouée !")
       })
     }
     getProduitsCount = (searchWord="")=>{
@@ -99,18 +101,39 @@ export default class Produits extends React.Component {
           })
         }
         else{
-          fetch(`http://localhost:8080/produits/edit`, {
-            method: "PUT",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(produit)
-          })
-          .then((data)=>data.json())
-          .then((res)=> {
+          // fetch(`http://localhost:8080/produits/edit`, {
+          //   method: "PUT",
+          //   headers: {"Content-type": "application/json"},
+          //   body: JSON.stringify(produit)
+          // })
+          // .then((data)=>data.json())
+          // .then((res)=> {
+          //     this.setState({
+          //         produits: this.state.produits.map((p)=> p.id === produit.id ? res : p)
+          //     })
+          //     this.props.history.push(`/produits?currentPage=${this.state.currentPage}&searchWord=${this.state.searchWord}`)}
+          //   )
+          
+            ProduitService.editProduit(produit).then((response)=>{
+              console.log(response.data);
+              const res = response.data;
               this.setState({
-                  produits: this.state.produits.map((p)=> p.id === produit.id ? res : p)
-              })
-              this.props.history.push(`/produits?currentPage=${this.state.currentPage}&searchWord=${this.state.searchWord}`)}
-            )
+                produits: this.state.produits.map((p)=> p.id === produit.id ? res : p)
+            })
+              this.props.history.push(`/produits?currentPage=${this.state.pageCount-1}&searchWord=${this.state.searchWord}`)
+              
+            }, (error)=>{
+              console.log(error);
+              if (error.response) {
+                if (error.response.status === 403) {
+                  alert("Accès refusé : Connectez-vous en tant qu'Employé pour modifier un produit")
+                  this.props.history.push(`/login`)
+                }
+              }
+              else{
+                alert(error.message)
+              }
+            })
           
         }
       }
@@ -147,7 +170,7 @@ export default class Produits extends React.Component {
     }
     render() {
         console.log(this.props.match);
-        const isEmploye = this.props.currentUser && this.props.currentUser.roles && this.props.currentUser.roles.includes("ROLE_EMPLOYE");
+        const isEmploye = AuthService.isEmploye(this.props.currentUser);
         return (
             <React.Fragment>
                 <div className="App-header">
@@ -156,7 +179,8 @@ export default class Produits extends React.Component {
                 </div>
                 <Switch>
                     <Route path={this.props.match.path + '/create'} render={
-                        (props)=> <ProduitForm {...props}  saveCallback={this.save} />
+                        (props)=> <ProduitForm {...props}  
+                                                saveCallback={this.save} />
                     } />
                     <Route path={this.props.match.path + '/edit/:id'} render={
                         (props)=> <ProduitForm {...props}  saveCallback={this.save} />
@@ -174,7 +198,8 @@ export default class Produits extends React.Component {
                                         perPage={this.state.perPage} 
                                         pageCount={this.state.pageCount} 
                                         setCurrentPage={this.setCurrentPage} 
-                                        deleteCallback={this.delete}  />
+                                        deleteCallback={this.delete}
+                                        addToCart={this.props.addToCart}  />
                     } />
                 </Switch>
                 
