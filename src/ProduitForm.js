@@ -84,7 +84,7 @@ export default class ProduitForm extends React.Component{
         }
         const id=this.props.match.params.id;
         if (id) {
-            fetch(`http://localhost:8080/produits/${id}`, {
+            fetch(`http://localhost:8080/productapp/api/public/produits/${id}`, {
             method: "GET"
           })
           .then((data)=>{
@@ -100,7 +100,7 @@ export default class ProduitForm extends React.Component{
           })
         }
         //get categories
-        fetch(`http://localhost:8080/categories`, {
+        fetch(`http://localhost:8080/productapp/categories`, {
             method: "GET"
           })
           .then((data)=>{

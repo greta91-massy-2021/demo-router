@@ -30,7 +30,7 @@ export default class FicheProduit extends React.Component{
 
     componentDidMount(){
         const id = this.props.match.params.id;
-        fetch("http://localhost:8080/produits/"+id, {
+        fetch("http://localhost:8080/productapp/api/public/produits/"+id, {
             method: "GET"
         })
         .then((data)=>data.json())

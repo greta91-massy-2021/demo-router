@@ -70,24 +70,24 @@ class App extends React.Component{
     return (
       <div className="App">
         <header className="App-header">
-          <Link to="/produits?currentPage=0">Produits</Link>
-          <Link to="/categories">Categories</Link>
-          <Link to="/panier">Panier ({this.state.panier.length})</Link>
+          <Link to="/ProductAppClient/produits?currentPage=0">Produits</Link>
+          <Link to="/ProductAppClient/categories">Categories</Link>
+          <Link to="/ProductAppClient/panier">Panier ({this.state.panier.length})</Link>
           {(this.state.currentUser) && <div>
                                         <span>{this.state.currentUser.username} | </span>
-                                        <a href="/login" className="nav-link" onClick={this.logOut}>
+                                        <a href="/ProductAppClient/login" className="nav-link" onClick={this.logOut}>
                                           Se déconnecter
                                         </a>
                                       </div>}
-          {(!this.state.currentUser) && <Link to="/login">Se connecter</Link>}
+          {(!this.state.currentUser) && <Link to="/ProductAppClient/login">Se connecter</Link>}
           
         </header>
         <main>
-          <Route path="/produits" render={(props)=> <Produits {...props} addToCart={this.addToCart} currentUser={this.state.currentUser} />}/>
-          <Route path="/panier" render={(props)=> <Panier {...props} panier={this.state.panier} deleteFromCart={this.deleteFromCart} editCartItem={this.editCartItem} deleteAllFromCart={this.deleteAllFromCart} />}/>
-          <Route path="/categories" component={Categories}/>
-          <Route path="/login" render={(props)=> <Login {...props} setCurrentUser={this.setCurrentUser} />}/>
-          <Route path="/access_denied" component={AccessDenied}/>
+          <Route path="/ProductAppClient/produits" render={(props)=> <Produits {...props} addToCart={this.addToCart} currentUser={this.state.currentUser} />}/>
+          <Route path="/ProductAppClient/panier" render={(props)=> <Panier {...props} panier={this.state.panier} deleteFromCart={this.deleteFromCart} editCartItem={this.editCartItem} deleteAllFromCart={this.deleteAllFromCart} />}/>
+          <Route path="/ProductAppClient/categories" component={Categories}/>
+          <Route path="/ProductAppClient/login" render={(props)=> <Login {...props} setCurrentUser={this.setCurrentUser} />}/>
+          <Route path="/ProductAppClient/access_denied" component={AccessDenied}/>
         </main>
       </div>
     );
